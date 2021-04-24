@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+import StoreSecretForm from './components/StoreSecretForm/index';
 
 function App() {
   return (
     <div className="App">
-      Hello
+      <p>Hello World!!</p>
+      <p>Happy to keep your secret.</p>
+      <StoreSecretForm />
     </div>
   );
 }
