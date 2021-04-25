@@ -1,11 +1,12 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-
-import todoReducer from './credentials/index';
+import { firebaseReducer } from 'react-redux-firebase'
+import { firestoreReducer } from 'redux-firestore';
 
 const store = configureStore({
-    reducer: {
-        credential: todoReducer,
-    }
+    reducer: combineReducers({
+        firebase: firebaseReducer,
+        firestore: firestoreReducer
+    })
 });
 
 export type RootState = ReturnType<typeof store.getState>

@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux'
-import { create } from '../../redux/credentials';
+import { useFirestore } from 'react-redux-firebase'
 
 function StoreSecretForm() {
 
   const [credentialName, setCredentialName] = useState('');
   const [credentialSecret, setCredentialSecret] = useState('');
-  const dispatch = useDispatch();
+  const firestore = useFirestore()
 
   const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
 
-    dispatch(create({name: credentialName, secret: credentialSecret}));
+    const firestoreContent = {
+      name: credentialName,
+      secret: credentialSecret,
+      groupId: null,
+      createdAt: Date.now(),
+    };
+    firestore
+      .collection('secrets')
+      .add(firestoreContent)
+      .then(() => {
+          console.log("Data added")
+      })
+      .catch(console.error)
 
     setCredentialName("");
     setCredentialSecret("");

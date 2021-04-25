@@ -2,10 +2,15 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from "./redux/store"
 import StoreSecretForm from './components/StoreSecretForm/index';
+import { useFirestoreConnect } from 'react-redux-firebase';
+import { Credential } from "./type";
 
 function App() {
 
-  const credentials = useSelector((state: RootState) => state.credential);
+  useFirestoreConnect([
+    { collection: "secrets" }
+  ]);
+  const credentials:Credential[] = useSelector((state:RootState) => state.firestore.ordered.secrets);
   return (
     <div className="App">
       <p>Hello World!!</p>
@@ -14,7 +19,8 @@ function App() {
       <h2>Your secrets</h2>
       <ul>
         {
-          credentials.map(({name, secret}) => (
+          credentials && 
+          credentials.map(({ name, secret }) => (
             <li>
               <p>{name}</p>
               <p>{secret}</p>
