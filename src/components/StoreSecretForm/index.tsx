@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useFirestore } from 'react-redux-firebase'
+import { RootState } from '../../redux/store';
 
 function StoreSecretForm() {
 
   const [credentialName, setCredentialName] = useState('');
   const [credentialSecret, setCredentialSecret] = useState('');
   const firestore = useFirestore()
+
+  const auth = useSelector((state:RootState) => state.firebase.auth)
 
   const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
 
@@ -14,6 +18,7 @@ function StoreSecretForm() {
       secret: credentialSecret,
       groupId: null,
       createdAt: Date.now(),
+      userId: auth.uid,
     };
     firestore
       .collection('secrets')

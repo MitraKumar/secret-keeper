@@ -2,32 +2,45 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from "./redux/store"
 import StoreSecretForm from './components/StoreSecretForm/index';
-import { useFirestoreConnect } from 'react-redux-firebase';
-import { Credential } from "./type";
+import Secrets from './components/Secrets/index';
+import { useFirebase, isLoaded, isEmpty } from 'react-redux-firebase'
+
+const RenderIfLoggedIn: React.FC<{}> = ({ children }) => {
+  const firebase = useFirebase()
+  const auth = useSelector((state:RootState) => state.firebase.auth)
+
+  function loginWithGoogle() {
+    return firebase.login({ provider: 'google', type: 'popup' })
+  }
+
+  return <>
+    {
+      !isLoaded(auth)
+      ? <span>Loading...</span>
+      : isEmpty(auth)
+        ? <button onClick={loginWithGoogle}>Login</button>
+        : <>{ children }</>
+    }
+  </>;
+}
 
 function App() {
 
-  useFirestoreConnect([
-    { collection: "secrets" }
-  ]);
-  const credentials:Credential[] = useSelector((state:RootState) => state.firestore.ordered.secrets);
+  const firebase = useFirebase();
+  const auth = useSelector((state:RootState) => state.firebase.auth)
+
   return (
     <div className="App">
-      <p>Hello World!!</p>
-      <p>Happy to keep your secret.</p>
-      <StoreSecretForm />
-      <h2>Your secrets</h2>
-      <ul>
-        {
-          credentials && 
-          credentials.map(({ name, secret }) => (
-            <li>
-              <p>{name}</p>
-              <p>{secret}</p>
-            </li>
-          ))
-        }
-      </ul>
+      <RenderIfLoggedIn>
+        <p>
+          <button onClick={() => firebase.logout()}>Logout!!</button>
+        </p>
+        <p>
+          Hello { auth.displayName }
+        </p>
+        <StoreSecretForm />
+        <Secrets />
+      </RenderIfLoggedIn>
     </div>
   );
 }
