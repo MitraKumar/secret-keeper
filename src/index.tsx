@@ -12,6 +12,8 @@ import {
   ReactReduxFirebaseProvider,
 } from 'react-redux-firebase'
 
+import "./scss/main.scss";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBTiyYkhyriDuI6jTYx6LTV39j9HVrfOzo",
   authDomain: "secret-keeper-16184.firebaseapp.com",
